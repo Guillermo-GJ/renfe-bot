@@ -111,3 +111,45 @@ def test_is_train_not_available_only_handicapped():
         "soloPlazaH": True
     }
     assert not Scraper._is_train_available(train)
+
+def test_get_transfer_stations_direct():
+    train = {
+        "tipoTrenDos": None,
+        "trayectos": [
+            {"descripcionEstacionOrigen": "MADRID", "descripcionEstacionDestino": "BARCELONA"}
+        ],
+    }
+    assert Scraper._get_transfer_stations(train) == []
+
+def test_get_transfer_stations_same_station():
+    train = {
+        "tipoTrenDos": "AVANT",
+        "trayectos": [
+            {"descripcionEstacionOrigen": "BARCELONA", "descripcionEstacionDestino": "CORDOBA"},
+            {"descripcionEstacionOrigen": "CORDOBA", "descripcionEstacionDestino": "SEVILLA"},
+        ],
+    }
+    assert Scraper._get_transfer_stations(train) == ["CORDOBA"]
+
+def test_get_transfer_stations_station_change():
+    train = {
+        "tipoTrenDos": "MD",
+        "trayectos": [
+            {"descripcionEstacionOrigen": "BARCELONA", "descripcionEstacionDestino": "MADRID-PTA"},
+            {"descripcionEstacionOrigen": "MADRID-CERC", "descripcionEstacionDestino": "SEVILLA"},
+        ],
+    }
+    assert Scraper._get_transfer_stations(train) == ["MADRID-PTA → MADRID-CERC"]
+
+def test_get_transfer_stations_without_legs():
+    assert Scraper._get_transfer_stations({"tipoTrenDos": "MD"}) == ["N/A"]
+    assert Scraper._get_transfer_stations({}) == []
+
+def test_is_train_not_on_sale_yet():
+    train = {"completo": False, "razonNoDisponible": "4", "tarifaMinima": None, "soloPlazaH": False}
+    assert Scraper._is_train_not_on_sale_yet(train)
+    assert not Scraper._is_train_available(train)
+
+def test_sold_out_train_is_not_flagged_as_not_on_sale_yet():
+    train = {"completo": True, "razonNoDisponible": "1", "tarifaMinima": None, "soloPlazaH": False}
+    assert not Scraper._is_train_not_on_sale_yet(train)

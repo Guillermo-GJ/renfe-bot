@@ -102,7 +102,9 @@ class Scraper:
                     duration=train["duracionViajeTotalEnMinutos"],
                     price=float(price.replace(",", ".")),
                     available=self._is_train_available(train),
+                    not_on_sale_yet=self._is_train_not_on_sale_yet(train),
                     train_type=train.get("tipoTrenUno", "N/A"),
+                    transfer_stations=self._get_transfer_stations(train),
                 )
                 trains_records.append(train_record)
 
@@ -123,6 +125,44 @@ class Scraper:
             and train["tarifaMinima"] is not None
             and not train["soloPlazaH"]
         )
+
+    @staticmethod
+    def _is_train_not_on_sale_yet(train: Dict[str, Any]) -> bool:
+        """Return whether a train exists but its tickets can't be bought yet.
+
+        Renfe flags these with the reason code "4" and no price, and its website shows them as
+        "Este tren no se encuentra disponible para la venta en estos momentos".
+
+        :param train: Trains dictionary
+        :type train: Dict[str, Any]
+        :return: Whether the train is not on sale yet
+        :rtype: bool
+        """
+        return not train.get("completo") and train.get("razonNoDisponible") == "4"
+
+    @staticmethod
+    def _get_transfer_stations(train: Dict[str, Any]) -> List[str]:
+        """Return the stations where a transfer is needed, or an empty list for direct trains.
+
+        Renfe returns every leg of the journey in "trayectos". When the transfer requires changing
+        station (e.g. between two Madrid stations), both stations are joined with an arrow.
+
+        :param train: Trains dictionary
+        :type train: Dict[str, Any]
+        :return: Transfer stations, one item per transfer
+        :rtype: List[str]
+        """
+        legs = train.get("trayectos") or []
+        if len(legs) < 2:
+            # Fallback in case the legs are missing but a second train is announced
+            return ["N/A"] if train.get("tipoTrenDos") else []
+
+        stations = []
+        for arriving_leg, departing_leg in zip(legs, legs[1:]):
+            arrival = arriving_leg.get("descripcionEstacionDestino", "N/A")
+            departure = departing_leg.get("descripcionEstacionOrigen", "N/A")
+            stations.append(arrival if arrival == departure else f"{arrival} → {departure}")
+        return stations
 
     @staticmethod
     def _change_datetime_hour(hour: str, date: datetime) -> datetime:

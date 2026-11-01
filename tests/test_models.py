@@ -114,3 +114,12 @@ def test_train_ride_str(sample_rides):
     ride = sample_rides[0]
     expected_str = "🚆 Tren AVE: 🕒 08:30 - 11:30 🕙 - 50.00 €\n"
     assert str(ride) == expected_str
+
+def test_train_ride_is_direct_by_default(sample_rides):
+    assert sample_rides[0].is_direct
+    assert sample_rides[0].transfers == 0
+
+def test_train_ride_with_transfer(sample_rides):
+    ride = sample_rides[0].model_copy(update={"transfer_stations": ["ZARAGOZA"]})
+    assert not ride.is_direct
+    assert ride.transfers == 1

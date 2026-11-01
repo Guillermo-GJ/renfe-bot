@@ -26,8 +26,27 @@ class TrainRideRecord(BaseModel):
 
     price: float = Field(description="Train ride price in euros")
     available: bool = Field(description="If the train ride is available for buying a ticket")
+    not_on_sale_yet: bool = Field(
+        default=False,
+        description="If the train ride exists but Renfe hasn't opened its ticket sales yet",
+    )
 
     train_type: str = Field(description="Train type")
+
+    transfer_stations: List[str] = Field(
+        default_factory=list,
+        description="Stations where a transfer is needed. Empty if the train ride is direct",
+    )
+
+    @property
+    def is_direct(self) -> bool:
+        """Whether the train ride goes from origin to destination without any transfer"""
+        return len(self.transfer_stations) == 0
+
+    @property
+    def transfers(self) -> int:
+        """Number of transfers needed during the train ride"""
+        return len(self.transfer_stations)
 
     def __str__(self):
         date_format = "%H:%M"

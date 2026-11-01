@@ -130,11 +130,15 @@ The command prints a table like this:
 └──────────────┴──────────────┴──────────────┴─────────┴───────┘
 ```
 
+Sold out trains are hidden. Trains that Renfe hasn't put on sale yet are listed with
+**Not on sale** as their price, so you can rerun the command to check when their sales open.
+
 #### Arguments
 
 * **`-o, --origin`** (required) – Origin station name.
 * **`-d, --destination`** (required) – Destination station name.
 * **`--departure_date`** (required) – Date of travel in `DD/MM/YYYY` format.
+* **`--direct`** (optional) – Show only direct trains, hiding those that require a transfer.
 
 ## Usage
 

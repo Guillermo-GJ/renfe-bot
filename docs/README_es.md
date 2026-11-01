@@ -124,11 +124,16 @@ El programa imprime una tabla como esta:
 └──────────────┴──────────────┴──────────────┴─────────┴───────┘
 ```
 
+Los trenes completos no se muestran. Los trenes que Renfe aún no ha puesto a la venta
+aparecen con **Not on sale** como precio, así puedes volver a ejecutar el comando para ver
+cuándo se abre su venta.
+
 #### Parámetros
 
 * **`-o, --origin`** (obligatorio) – Estación de origen.
 * **`-d, --destination`** (obligatorio) – Estación de destino.
 * **`--departure_date`** (obligatorio) – Fecha de salida en formato `DD/MM/YYYY`.
+* **`--direct`** (opcional) – Muestra solo trenes directos, ocultando los que tienen transbordo.
 
 
 ## Uso
