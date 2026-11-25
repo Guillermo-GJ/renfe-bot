@@ -153,7 +153,7 @@ actualice.
 ## 🙏 Créditos
 
 Basado en [**renfe-bot** de emartinez-dev](https://github.com/emartinez-dev/renfe-bot), que hizo
-el trabajo duro de entender cómo consulta Renfe sus trenes. Este fork añade el calendario, la
+el trabajo duro de entender cómo consulta Renfe sus trenes. Este proyecto parte de su código y añade el calendario, la
 vigilancia de un tren exacto, las sugerencias de estaciones, `/repetir`, `/estado`, `/prueba`, el
 guardado de búsquedas y el despliegue en servidor.
 
@@ -179,5 +179,5 @@ pip install -r requirements.txt
 PYTHONPATH=src python src/bot.py   # asks for the token the first time
 ```
 
-The bot's messages are in Spanish. Fork of
+The bot's messages are in Spanish. Based on
 [emartinez-dev/renfe-bot](https://github.com/emartinez-dev/renfe-bot) · MIT license.
