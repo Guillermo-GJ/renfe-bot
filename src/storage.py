@@ -87,7 +87,7 @@ class StationsStorage:
         if cls.stations is None:
             cls.stations = load_json(STATIONS_PATH)
 
-        # Stations that contain what the user typed ('delicias' -> 'ZARAGOZA-DELICIAS')
+        # Stations that contain what the user typed ('goya' -> 'ZARAGOZA GOYA')
         wanted = normalize_name(name)
         contained = [key for key in cls.stations if wanted and wanted in normalize_name(key)]
         if contained:

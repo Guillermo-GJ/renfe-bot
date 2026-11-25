@@ -19,20 +19,23 @@ _[English summary below](#-english)_
 a la venta… durante unos minutos. **renfe-bot** consulta Renfe cada minuto y te manda un aviso al
 móvil en cuanto hay sitio, con un botón que te lleva directo a la compra.
 
-```text
-🚨 ¡Hay plaza! Madrid Pta. Atocha → Zaragoza-Delicias, 14/03/2027:
+<p align="center">
+  <img src="docs/img/4-aviso.jpg" alt="Aviso de plaza libre con botón para abrirlo en Renfe" width="600">
+</p>
 
-🚆 Tren AVE: 🕒 09:30 - 10:50 🕙 - 35.50 €
+## 📱 Así funciona
 
-Pulsa el botón para abrirlo en Renfe (marca «Solo ida» y busca). ¡Corre, que vuela!
-                    [ 🎟️ Abrir en Renfe ]
-```
+| 1. Escribe la estación como quieras | 2. Elige el día en el calendario |
+|---|---|
+| <img src="docs/img/1-estaciones.jpg" alt="Sugerencias de estaciones como botones"> | <img src="docs/img/2-calendario.jpg" alt="Calendario para elegir el día"> |
+| **3. Pulsa la hora del tren que quieres** | **4. Te avisa en cuanto hay plaza** |
+| <img src="docs/img/3-horas.jpg" alt="Botones con las horas reales de los trenes"> | <img src="docs/img/4-aviso.jpg" alt="Aviso de plaza libre"> |
 
 ## ✨ Qué hace
 
 - 🎯 **Vigila un tren concreto** (por ejemplo, solo el de las 09:30) o **cualquier tren desde una hora**.
 - 📅 **Calendario** para elegir el día y **botones con las horas reales** de los trenes de ese día.
-- 🔤 **Entiende lo que escribes**: `cordoba` → Córdoba, `delicias` → Zaragoza-Delicias,
+- 🔤 **Entiende lo que escribes**: `cordoba` → Córdoba, `zaragoza` → te ofrece Zaragoza-Delicias, Zaragoza Goya…,
   y si te equivocas te propone las estaciones más parecidas como botones.
 - 🗓️ Fechas en lenguaje natural: `14/03 09:30`, `14 de marzo a las 09:30`…
 - 🔁 **`/repetir`** tu última búsqueda, cambiando el día o la hora si quieres.
