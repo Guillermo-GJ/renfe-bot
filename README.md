@@ -1,184 +1,183 @@
-# renfe-bot
-[![CI](https://github.com/emartinez-dev/renfe-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/emartinez-dev/renfe-bot/actions/workflows/ci.yml)
-[![Nightly Tests](https://github.com/emartinez-dev/renfe-bot/actions/workflows/nightly-tests.yml/badge.svg)](https://github.com/emartinez-dev/renfe-bot/actions/workflows/nightly-tests.yml)
-![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Femartinez-dev%2Frenfe-bot%2Fmaster%2Fpyproject.toml)
-[![codecov](https://codecov.io/gh/emartinez-dev/renfe-bot/graph/badge.svg?token=L39OAEL5MD)](https://codecov.io/gh/emartinez-dev/renfe-bot)
-![license](https://img.shields.io/github/license/emartinez-dev/renfe-bot.svg)
+<div align="center">
 
-| Python Version Support | Supported Platforms |
-|-------------------------|---------------------|
-| ![Python >= 3.12](https://img.shields.io/badge/python-%3E%3D%203.12-blue.svg) | ![Linux](https://img.shields.io/badge/platform-Linux-blue.svg) ![macOS](https://img.shields.io/badge/platform-macOS-lightgrey.svg) ![Windows](https://img.shields.io/badge/platform-Windows-brightgreen.svg) |
+# 🚆 renfe-bot
 
+**Te avisa por Telegram en cuanto queda libre una plaza en el tren de Renfe que quieres.**
 
-_También puedes leer esto en [Español](https://github.com/emartinez-dev/renfe-bot/blob/master/docs/README_es.md)_
+[![CI](https://github.com/Guillermo-GJ/renfe-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/Guillermo-GJ/renfe-bot/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13%20%7C%203.14-blue)
+![Plataformas](https://img.shields.io/badge/Linux%20%7C%20macOS%20%7C%20Windows-lightgrey)
+[![Licencia: MIT](https://img.shields.io/badge/licencia-MIT-green)](LICENSE)
 
-## Description
+_[English summary below](#-english)_
 
-Renfe-bot is a Telegram bot designed to assist users in purchasing train tickets
-from Renfe, the main railway operator in Spain. The bot monitors ticket
-availability, especially in situations when tickets are sold out and only become
-available when someone cancels their reservation. It promptly notifies users
-when there are tickets available for purchase. The bot now supports a Telegram
-chatbot interface for enhanced user interaction.
+</div>
 
-New in v0.3.0: Renfe‑bot now ships with a lightweight command‑line interface
-(CLI) so you can perform quick one‑off searches directly from your terminal —
-perfect for scripting or when you don’t want to open Telegram.
+---
 
-The error handling is not perfect, so if you encounter any issues, retrying the
-command should work. If the issue persists, please open an issue on GitHub.
+¿El tren que necesitas sale como **"Completo"**? Cuando alguien cancela, la plaza vuelve a estar
+a la venta… durante unos minutos. **renfe-bot** consulta Renfe cada minuto y te manda un aviso al
+móvil en cuanto hay sitio, con un botón que te lleva directo a la compra.
 
-## How to run
+```text
+🚨 ¡Hay plaza! Madrid Pta. Atocha → Zaragoza-Delicias, 14/03/2027:
 
-### Option A: Running normally in your computer
+🚆 Tren AVE: 🕒 09:30 - 10:50 🕙 - 35.50 €
 
-#### Requirements
-
-This project requires at least Python 3.12, and it runs on macOS, Linux and
-Windows.
-
-#### Installation
-
-Follow the below steps to install and set up the Renfe-bot:
-
-Clone this repository to your local machine or download the code
-```bash
-git clone git@github.com:emartinez-dev/renfe-bot.git
+Pulsa el botón para abrirlo en Renfe (marca «Solo ida» y busca). ¡Corre, que vuela!
+                    [ 🎟️ Abrir en Renfe ]
 ```
 
-Install the required dependencies using the following command
+## ✨ Qué hace
+
+- 🎯 **Vigila un tren concreto** (por ejemplo, solo el de las 09:30) o **cualquier tren desde una hora**.
+- 📅 **Calendario** para elegir el día y **botones con las horas reales** de los trenes de ese día.
+- 🔤 **Entiende lo que escribes**: `cordoba` → Córdoba, `delicias` → Zaragoza-Delicias,
+  y si te equivocas te propone las estaciones más parecidas como botones.
+- 🗓️ Fechas en lenguaje natural: `14/03 09:30`, `14 de marzo a las 09:30`…
+- 🔁 **`/repetir`** tu última búsqueda, cambiando el día o la hora si quieres.
+- 📊 **`/estado`**: comprueba en cualquier momento que tu búsqueda sigue activa y cómo va.
+- 🧪 **`/prueba`**: te manda un aviso de ejemplo para comprobar que las notificaciones te llegan.
+- 💾 **No pierde tus búsquedas**: si el bot se reinicia o se va la luz, las retoma solo y te avisa
+  (⏸️ al pararse, ▶️ al volver).
+- 🌐 **Aguanta los cortes**: si no hay internet o Renfe falla, reintenta cada minuto y te avisa si
+  lleva 10 minutos sin poder consultar.
+- 🔙 Ida y vuelta, filtros por precio máximo y duración máxima.
+
+## 💬 Comandos
+
+| Comando | Qué hace |
+|---|---|
+| `/buscar` | Empieza una búsqueda nueva |
+| `/repetir` | Repite tu última búsqueda (igual, cambiando la hora o el día) |
+| `/estado` | Te dice si tu búsqueda sigue activa, cuántas consultas lleva y el último resultado |
+| `/cancelar` | Cancela la búsqueda en curso |
+| `/prueba` | Aviso de ejemplo a los 15 s (`/prueba 60` para esperar 60 s) |
+| `/ayuda` | Lista de comandos |
+
+## 🚀 Cómo ponerlo en marcha
+
+Necesitas **Python 3.12 o superior** y una cuenta de **Telegram**.
+
+### 1. Crea tu bot de Telegram
+
+1. Abre [@BotFather](https://t.me/botfather) en Telegram y escribe `/newbot`.
+2. Elige un nombre y un usuario (tiene que acabar en `bot`).
+3. Guarda el **token** que te da. Es la llave de tu bot: **no lo compartas**.
+
+### 2. Instala y arranca
+
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/Guillermo-GJ/renfe-bot.git
+cd renfe-bot
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+PYTHONPATH=src .venv/bin/python src/bot.py
 ```
 
-Run the bot by executing it with this command
+La primera vez te pedirá el token y lo guardará en `config.ini` (que no se sube a git).
+Después, abre tu bot en Telegram y escribe `/buscar`.
 
-```bash
-PYTHONPATH=src/ python src/bot.py
+<details>
+<summary>🪟 En Windows</summary>
+
+```bat
+python -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+set PYTHONPATH=src
+.venv\Scripts\python src\bot.py
 ```
+</details>
 
-or this one if you are on Windows command prompt
-
-```bash
-setx PYTHONPATH src/
-python src/bot.py
-```
-
-Anything required like the API key will be prompted for when you run the bot   for the first time.
-
-### Option B: Running it as a Docker container 
-
-#### Requirements
-
-To run this in Docker, you will just need to have a valid installation of Docker,
-everything else is provided in the Dockerfile.
-
-> [!IMPORTANT]
-> It's possible that you need to add `sudo` before every command,
-> or you can add your user to the `docker` group, check [this
-> doc](https://docs.docker.com/engine/install/linux-postinstall/).
-
-#### Installation
-
-First you need to build the image, do it with the following command:
+<details>
+<summary>🐳 Con Docker</summary>
 
 ```bash
 docker build -t renfe-bot .
-```
-
-When the image finishes building, it can already be run with the following command:
-
-```bash
 docker run -it -v $(pwd):/app renfe-bot
 ```
 
-Or if you are using Windows:
+Si Docker no te deja escribir el token, créalo tú en `config.ini`:
 
-```bat
-docker run -it -v %cd%:/app renfe-bot
+```ini
+[Telegram]
+secret_token=123456789:ABCdefGhIjKlmNopQrsTuvWxYz
 ```
+</details>
 
-### Option C: Using the command‑line interface (CLI)
+### 3. Déjalo siempre encendido (opcional, recomendado)
 
-The CLI offers the fastest way to look up trains straight from your shell.
+El bot solo vigila mientras está funcionando. Lo ideal es tenerlo en un equipo que esté siempre
+encendido: un **portátil viejo con Linux**, una **Raspberry Pi** o un servidor. Consume muy poco
+(un portátil antiguo en reposo gasta unos 15–20 W, ~2 € al mes).
 
-#### Quick start
+En [`deploy/renfe-bot.service`](deploy/renfe-bot.service) tienes un servicio de **systemd** listo
+para copiar: arranca el bot con el equipo, lo reinicia si falla y espera a tener internet tras un
+corte de luz.
 
-Once the project’s dependencies are installed (see **Option A – Installation** above), you can run
-the CLI program with the following syntax:
+## ⌨️ Búsqueda rápida desde la terminal
+
+También puedes consultar trenes sin Telegram:
 
 ```bash
-PYTHONPATH=./src python src/cli.py -o <ORIGIN> -d <DESTINATION> --departure_date DD/MM/YYYY
+PYTHONPATH=src python src/cli.py -o Madrid -d Barcelona --departure_date 21/06/2027
 ```
 
-Example:
+Muestra una tabla con los trenes con plazas (los completos no salen). Añade `--direct` para ver
+solo trenes directos.
+
+## 🛠️ Desarrollo
 
 ```bash
-PYTHONPATH=./src python src/cli.py -o Madrid -d Barcelona --departure_date 21/06/2025
+PYTHONPATH=src .venv/bin/python -m pytest tests --ignore=tests/integration
 ```
 
-The command prints a table like this:
+| Archivo | Qué hay |
+|---|---|
+| `src/bot.py` | Conversación de Telegram, búsquedas en segundo plano y guardado |
+| `src/scraper.py` | Consulta de trenes a Renfe |
+| `src/calendar_kb.py` | Calendario y botones de horas |
+| `src/validators.py`, `src/storage.py` | Estaciones (con sugerencias) y fechas |
+| `src/models.py` | Trenes y filtros (incluido el de hora exacta) |
 
+¿Ideas o fallos? Abre una [issue](https://github.com/Guillermo-GJ/renfe-bot/issues) o manda un
+pull request.
+
+## ⚠️ Aviso
+
+Proyecto personal, **sin relación con Renfe**. Usa la web pública de Renfe para consultar
+disponibilidad y **no compra ni reserva nada**: solo te avisa. Consulta una vez por minuto por
+búsqueda; úsalo con cabeza. Si Renfe cambia su web, el bot puede dejar de funcionar hasta que se
+actualice.
+
+## 🙏 Créditos
+
+Basado en [**renfe-bot** de emartinez-dev](https://github.com/emartinez-dev/renfe-bot), que hizo
+el trabajo duro de entender cómo consulta Renfe sus trenes. Este fork añade el calendario, la
+vigilancia de un tren exacto, las sugerencias de estaciones, `/repetir`, `/estado`, `/prueba`, el
+guardado de búsquedas y el despliegue en servidor.
+
+Licencia [MIT](LICENSE).
+
+---
+
+## 🇬🇧 English
+
+**renfe-bot** is a Telegram bot that watches sold-out trains of Renfe (Spain's railway operator)
+and messages you as soon as a seat frees up, with a button that opens the booking page.
+
+- Watch an **exact train** or any train from a given time; pick the day on a **calendar** and the
+  time among the **real departures** of that day.
+- Fuzzy station names with suggestions, natural-language dates (in Spanish or English).
+- `/repetir` (repeat last search), `/estado` (status), `/prueba` (test alert), `/cancelar`.
+- Searches **survive restarts and power cuts**, and network errors are retried.
+
+Quick start: create a bot with [@BotFather](https://t.me/botfather), then
+
+```bash
+pip install -r requirements.txt
+PYTHONPATH=src python src/bot.py   # asks for the token the first time
 ```
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃          Trains from Madrid to Barcelona – 21/06/2025        ┃
-┡━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━┯━━━━━━━━━┯━━━━━━━┩
-│ Train type   │ Departure    │ Arrival      │ Duration │ Price │
-├──────────────┼──────────────┼──────────────┼─────────┼───────┤
-│ AVE          │ 06:30        │ 08:59        │ 2.5 h.   │ 46.90€│
-│ AVE          │ 07:30        │ 10:05        │ 2.6 h.   │ 38.15€│ ← cheaper‑than‑avg highlighted in green
-└──────────────┴──────────────┴──────────────┴─────────┴───────┘
-```
 
-Sold out trains are hidden. Trains that Renfe hasn't put on sale yet are listed with
-**Not on sale** as their price, so you can rerun the command to check when their sales open.
-
-#### Arguments
-
-* **`-o, --origin`** (required) – Origin station name.
-* **`-d, --destination`** (required) – Destination station name.
-* **`--departure_date`** (required) – Date of travel in `DD/MM/YYYY` format.
-* **`--direct`** (optional) – Show only direct trains, hiding those that require a transfer.
-
-## Usage
-
-### Bot
-
-To use the bot, send a message to your bot on Telegram. You need to provide
-inputs such as origin and destination stations, and dates. The bot will monitor
-the ticket availability and notify you immediately when there's a ticket
-available for your journey.
-
-### CLI
-
-See Option C above.
-
-## Contributing
-
-This project is open source and contributions are very much welcomed. If you
-would like to contribute to the project, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your changes.
-3. Make your changes.
-4. Push your changes to your fork.
-5. Submit a pull request with a description of the changes.
-
-Before merging, all changes will be tested to ensure they function correctly.
-Contributions are not limited to code changes; opening issues or providing
-suggestions are equally valuable.
-
-## License
-
-This project is licensed under the terms of the [MIT
-License](https://opensource.org/license/mit/).
-
-The MIT License is a permissive license that allows for reuse of software within
-proprietary software provided that all copies of the licensed software include a
-copy of the MIT License terms and the copyright notice.
-
-This means that you are free to use, copy, modify, merge, publish, distribute,
-sublicense, and/or sell copies of the software, as long as you include the
-necessary attribution and provide a copy of the MIT license.
-
-You can see the full license text in the LICENSE file.
+The bot's messages are in Spanish. Fork of
+[emartinez-dev/renfe-bot](https://github.com/emartinez-dev/renfe-bot) · MIT license.
