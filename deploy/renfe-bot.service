@@ -1,0 +1,30 @@
+# Servicio de systemd (de usuario) para tener renfe-bot siempre encendido en un servidor Linux.
+#
+# Instalación (sin sudo, como tu usuario):
+#   mkdir -p ~/.config/systemd/user
+#   cp deploy/renfe-bot.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now renfe-bot
+#   sudo loginctl enable-linger $USER   # para que arranque sin iniciar sesión
+#
+# Ver si funciona:   systemctl --user status renfe-bot
+# Ver los registros: journalctl --user -u renfe-bot -f
+#
+# Ajusta las rutas si no clonaste el repositorio en ~/renfe-bot.
+
+[Unit]
+Description=renfe-bot (aviso de plazas de Renfe por Telegram)
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/renfe-bot
+Environment=PYTHONPATH=src
+Environment=PYTHONUNBUFFERED=1
+# Espera a tener internet antes de arrancar (útil tras un corte de luz)
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 60); do getent hosts api.telegram.org >/dev/null && exit 0; sleep 2; done; exit 0'
+ExecStart=%h/renfe-bot/.venv/bin/python src/bot.py
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=default.target
