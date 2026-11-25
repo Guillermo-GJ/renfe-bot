@@ -76,6 +76,9 @@ class TrainRideFilter(BaseModel):
 
     max_price: Optional[float] = None
 
+    # When True, only the train leaving exactly at departure_date's hour and minute is watched
+    exact_time: bool = False
+
     def filter_rides(self, rides: List[TrainRideRecord]) -> List[TrainRideRecord]:
         """Filter a list of TrainRideRecord based on user preferences."""
         filtered_rides = []
@@ -86,6 +89,9 @@ class TrainRideFilter(BaseModel):
             if ride.departure_time.date() != self.departure_date.date():
                 continue
             if ride.departure_time < self.departure_date:
+                continue
+            if self.exact_time and (ride.departure_time.hour, ride.departure_time.minute) != (
+                self.departure_date.hour, self.departure_date.minute):
                 continue
             if self.max_duration_minutes and ride.duration > self.max_duration_minutes:
                 continue

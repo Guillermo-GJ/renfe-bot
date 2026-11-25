@@ -2,15 +2,25 @@
 
 import itertools
 import json
+import re
+import unicodedata
 from pathlib import Path
 from typing import Any, Dict, List, Iterable, Optional
 
-from thefuzz import process
+from thefuzz import fuzz, process
 
 from errors import StationNotFound
 from models import StationRecord
 
 STATIONS_PATH = Path("assets/stations.json")
+
+
+def normalize_name(name: str) -> str:
+    """Uppercase, without accents and with hyphens/extra spaces collapsed: 'Córdoba' -> 'CORDOBA',
+    'Zaragoza - Delicias' -> 'ZARAGOZA DELICIAS'."""
+    without_accents = "".join(c for c in unicodedata.normalize("NFKD", name)
+                              if not unicodedata.combining(c))
+    return re.sub(r"[\s\-]+", " ", without_accents).strip().upper()
 
 
 def load_json(path: Path) -> Dict[str, Any]:
@@ -52,13 +62,19 @@ class StationsStorage:
             cls.stations = load_json(STATIONS_PATH)
 
         if (station := cls.stations.get(name, None)) is None:
-            raise StationNotFound(f"Couldn't find the station '{name}'")
+            # Accept the name without accents, in any case or with other separators, when it
+            # matches exactly one station ('cordoba' -> 'CÓRDOBA')
+            wanted = normalize_name(name)
+            matches = [s for key, s in cls.stations.items() if normalize_name(key) == wanted]
+            if len(matches) != 1:
+                raise StationNotFound(f"Couldn't find the station '{name}'")
+            station = matches[0]
 
         assert isinstance(station, dict)
         return StationRecord(name=station['desgEstacion'], code=station['clave'])
 
     @classmethod
-    def find_station(cls, name: str) -> List[str]:
+    def find_station(cls, name: str, limit: int = 5, score_cutoff: int = 75) -> List[str]:
         """Retrieves a list of station records fuzzy finding the names
 
         :param name: The name of the station to retrieve
@@ -71,7 +87,16 @@ class StationsStorage:
         if cls.stations is None:
             cls.stations = load_json(STATIONS_PATH)
 
-        guesses = process.extractBests(name, cls.stations.keys(), score_cutoff=90)
+        # Stations that contain what the user typed ('delicias' -> 'ZARAGOZA-DELICIAS')
+        wanted = normalize_name(name)
+        contained = [key for key in cls.stations if wanted and wanted in normalize_name(key)]
+        if contained:
+            return sorted(contained, key=len)[:limit]
+
+        # Otherwise, the most similar names, ignoring accents and case ('Zaragosa' -> 'ZARAGOZA...')
+        guesses = process.extractBests(name, cls.stations.keys(), score_cutoff=score_cutoff,
+                                       limit=limit, processor=normalize_name,
+                                       scorer=fuzz.WRatio)
         return [guess[0] for guess in guesses]
 
     @classmethod

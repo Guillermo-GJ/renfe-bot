@@ -19,6 +19,7 @@ class StationValidationResult:
     is_valid: bool
     station: StationRecord | None = None
     error_message: str = ""
+    suggestions: list[str] | None = None
 
     def __bool__(self):
         return self.is_valid
@@ -65,7 +66,8 @@ def validate_station(station_name: Optional[str]) -> StationValidationResult:
             if possible_stations
             else msg["station_invalid"]
         )
-        return StationValidationResult(is_valid=False, error_message=error_message)
+        return StationValidationResult(is_valid=False, error_message=error_message,
+                                       suggestions=[s.title() for s in possible_stations])
 
 
 def validate_date(message: Optional[str]) -> DateValidationResult:
@@ -76,9 +78,17 @@ def validate_date(message: Optional[str]) -> DateValidationResult:
 
     parsed_date = dateparser.parse(message,
                                    languages=["es", "en"],
-                                   settings={"STRICT_PARSING": True})
+                                   settings={"REQUIRE_PARTS": ["day", "month"],
+                                             "PREFER_DATES_FROM": "future",
+                                             "DATE_ORDER": "DMY"})
     if parsed_date is None:
         return DateValidationResult(is_valid=False, error_message=msg["wrong_date"])
+    if parsed_date.microsecond != 0:
+        # dateparser fills a missing hour with the current time: use "from midnight" instead
+        parsed_date = parsed_date.replace(hour=0, minute=0)
+    parsed_date = parsed_date.replace(second=0, microsecond=0)
+    if parsed_date.date() < datetime.now().date():
+        return DateValidationResult(is_valid=False, error_message=msg["past_date"])
     return DateValidationResult(is_valid=True, date=parsed_date)
 
 
