@@ -1,8 +1,8 @@
 name: Nightly Tests
 
+# Pruebas contra la web real de Renfe. Se lanzan a mano desde la pestaña Actions
+# para no consultar Renfe todos los días desde GitHub.
 on:
-  schedule:
-    - cron: "0 22 * * *" # This runs at 22:00 UTC every day
   workflow_dispatch:
 
 jobs:
